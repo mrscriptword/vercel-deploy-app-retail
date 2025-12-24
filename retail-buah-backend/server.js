@@ -318,7 +318,9 @@ app.delete('/api/users/:id', async (req, res) => {
 });
 
 // 6. JALANKAN SERVER
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server jalan di http://localhost:${PORT}`));
+if (process.env.NODE_ENV !== 'vercel') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`🚀 Server jalan di http://localhost:${PORT}`));
+}
 
 module.exports = app;
