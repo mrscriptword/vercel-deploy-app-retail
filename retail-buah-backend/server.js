@@ -75,14 +75,21 @@ const Transaction = mongoose.model('Transaction', new mongoose.Schema({
 }));
 
 // ================= 4. KONEKSI DATABASE & STATUS =================
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('================================================');
-    console.log('✅ DATABASE: Terhubung ke MongoDB Atlas');
-    console.log(`🌐 LOKASI: Running on ${isVercel ? 'VERCEL CLOUD' : 'LOCALHOST'}`);
-    console.log('================================================');
-  })
-  .catch((err) => console.error('❌ Gagal Koneksi Database:', err));
+mongoose.connect(process.env.MONGO_URI, {
+  // Opsi tambahan untuk stabilitas di Vercel
+  serverSelectionTimeoutMS: 10000, // Tunggu hingga 10 detik
+  socketTimeoutMS: 45000,          // Menjaga koneksi tetap terbuka lebih lama
+})
+.then(() => {
+  const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
+  console.log('================================================');
+  console.log('✅ DATABASE: Terhubung ke MongoDB Atlas');
+  console.log(`🌐 LOKASI: Running on ${isVercel ? 'VERCEL CLOUD' : 'LOCALHOST'}`);
+  console.log('================================================');
+})
+.catch((err) => {
+  console.error('❌ Gagal Koneksi Database:', err.message);
+});
 
 const JWT_SECRET = process.env.JWT_SECRET || 'rahasia_toko_buah_super_aman';
 
