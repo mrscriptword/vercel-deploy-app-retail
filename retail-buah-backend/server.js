@@ -16,11 +16,13 @@ app.use(express.json()); // Agar bisa baca JSON
 // Agar folder 'uploads' bisa diakses publik (contoh: http://localhost:3000/uploads/gbr.jpg)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// 2. CEK FOLDER UPLOADS
-// Buat folder 'uploads' otomatis jika belum ada
+
 const uploadDir = 'uploads';
-if (!fs.existsSync(uploadDir)){
-    fs.mkdirSync(uploadDir);
+// Hanya jalankan mkdir jika tidak sedang di Vercel
+if (process.env.NODE_ENV !== 'production') {
+    if (!fs.existsSync(uploadDir)){
+        fs.mkdirSync(uploadDir);
+    }
 }
 
 // 3. KONFIGURASI MULTER (UPLOAD GAMBAR)
